@@ -2,7 +2,12 @@ package horde
 
 import (
 	"fmt"
+	"image/png"
 	"log"
+	"os"
+	"path/filepath"
+
+	"golang.org/x/image/webp"
 )
 
 const (
@@ -72,11 +77,11 @@ func (c *Client) ImageGenerate(prompt string, steps, width, height int, modelNam
 		return nil, fmt.Errorf("waiting for completion: %w", err)
 	}
 
-	log.Printf("Status: %v", status.Generation[0])
+	log.Printf("Status: %v", status.Generation[0].Image)
 	// Verify we have results
-	if len(status.Generation[0].Image) != 0 {
+	/*if len(status.Generation) != 0 {
 		return nil, fmt.Errorf("no results returned")
-	}
+	}*/
 
 	// Download the image
 	log.Printf("Downloading generated image...")
@@ -87,4 +92,39 @@ func (c *Client) ImageGenerate(prompt string, steps, width, height int, modelNam
 	log.Printf("Successfully downloaded image: %d bytes", len(imageData))
 
 	return imageData, nil
+}
+
+func Webp2PNG(input string) error {
+	if input == "" {
+		return fmt.Errorf("Error: No input file specified")
+	}
+
+	output := filepath.Base(input)
+	output = output[0 : len(output)-len(filepath.Ext(output))] // Remove file extension
+
+	f, err := os.Open(input)
+	if err != nil {
+		return fmt.Errorf("Error:", err)
+	}
+	defer f.Close()
+
+	img, err := webp.Decode(f)
+	if err != nil {
+		return fmt.Errorf("Error:", err)
+	}
+
+	// Convert to PNG
+	pngFile, err := os.Create(output + ".png")
+	if err != nil {
+		return fmt.Errorf("Error:", err)
+	}
+	defer pngFile.Close()
+
+	err = png.Encode(pngFile, img)
+	if err != nil {
+		return fmt.Errorf("Error:", err)
+	}
+
+	fmt.Println("Conversion completed successfully")
+	return nil
 }
