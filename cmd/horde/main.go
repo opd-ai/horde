@@ -20,6 +20,7 @@ var (
 )
 
 func main() {
+	flag.Parse()
 	apiKey := os.Getenv("HORDE_API_KEY")
 	if apiKey == "" {
 		log.Fatal("Set a stable horde API key")

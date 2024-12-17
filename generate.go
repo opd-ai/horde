@@ -98,7 +98,7 @@ func Webp2PNG(input string) error {
 	if input == "" {
 		return fmt.Errorf("Error: No input file specified")
 	}
-
+	dir := filepath.Dir(input)
 	output := filepath.Base(input)
 	output = output[0 : len(output)-len(filepath.Ext(output))] // Remove file extension
 
@@ -114,7 +114,7 @@ func Webp2PNG(input string) error {
 	}
 
 	// Convert to PNG
-	pngFile, err := os.Create(output + ".png")
+	pngFile, err := os.Create(filepath.Join(dir, output) + ".png")
 	if err != nil {
 		return fmt.Errorf("Error:", err)
 	}
