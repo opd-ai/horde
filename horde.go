@@ -60,7 +60,7 @@ type GenerationStatus struct {
 	WaitTime   int    `json:"wait_time"`      // Expected waiting time
 	QueuePos   int    `json:"queue_position"` // Position in queue
 	Processing int    `json:"processing"`     // Whether currently processing
-	//Results    []Result    `json:"results"`
+	// Results    []Result    `json:"results"`
 	Generation []Generations `json:"generations"`
 }
 
